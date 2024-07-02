@@ -273,6 +273,8 @@ app.get('/removecartitem',async(req,res)=>{
 
 
 
-app.listen(PORT,()=>{
-    console.log('sever is running')
-})
+// app.listen(PORT,()=>{
+//     console.log('sever is running')
+// })
+
+module.exports = app;

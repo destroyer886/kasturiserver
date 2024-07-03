@@ -17,6 +17,11 @@ let db;
     console.log(client)
     
     console.log('mongo db is connected with Kasturi')
+
+  return{
+   client
+  }
+  
     
 
 

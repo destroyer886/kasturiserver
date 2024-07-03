@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
     // Connect to MongoDB if not already cached
     if (!cachedDb) {
       cachedDb = await connectToDb();
-      res.send('first')
+     
     }
 
     // Handle the request through the Express app

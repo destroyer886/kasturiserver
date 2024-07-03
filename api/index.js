@@ -8,7 +8,7 @@ let cachedDb = null;
 module.exports = async (req, res) => {
   try {
     // Connect to MongoDB
-    const db = await connectToDb();
+    const db = connectToDb();
     cachedDb = db; // Cache the database connection for reuse
 
     // Handle the request through the Express app

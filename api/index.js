@@ -1,15 +1,16 @@
 // api/index.js
 
-const app = require('../server'); // Adjust the path as needed
-const { connectToDb } = require('../db'); // Adjust the path as needed
+const app = require('../server');
+const { connectToDb } = require('../db');
 
 let cachedDb = null;
 
 module.exports = async (req, res) => {
   try {
-    // Connect to MongoDB
-    const db = await connectToDb();
-    cachedDb = db; // Cache the database connection for reuse
+    // Connect to MongoDB if not already cached
+    if (!cachedDb) {
+      cachedDb = await connectToDb();
+    }
 
     // Handle the request through the Express app
     await app(req, res);

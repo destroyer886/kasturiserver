@@ -22,8 +22,6 @@ const PORT = 3000;
 
 
 
-connectToDb();
-
 
 app.get('/',(req,res)=>{
     res.send('working')

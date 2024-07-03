@@ -45,7 +45,7 @@ const closedb = async ()=>{
           });
           
       } else {
-        console.log('loda bhenchod')
+        
         process.exit(0);
       }
 

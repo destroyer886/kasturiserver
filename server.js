@@ -1,5 +1,5 @@
 const express = require('express')
-const {DB , connectToDb , closedb} =  require('./db')
+const {DB , connectToDb , closedb,client} =  require('./db')
 const cors = require('cors');
 const { ObjectId } = require('mongodb');
 
@@ -22,7 +22,7 @@ const PORT = 3000;
 
 
 
-
+connectToDb();
 
 
 app.get('/',(req,res)=>{
@@ -37,8 +37,8 @@ app.post('/addproducts', async(req,res)=>{
 
     let data;
     try {
-    await connectToDb();
-    const db = await DB();
+    
+    
     const collection = db.collection('HomeProducts')
     await collection.insertOne({
         heading : heading,
@@ -54,8 +54,6 @@ app.post('/addproducts', async(req,res)=>{
     res.json({status : 'ok', data: data})
     } catch (error) {
         console.error
-    }finally{
-        await closedb();
     }
 })
 
@@ -67,18 +65,13 @@ app.get('/gethomeproducts', async (req,res)=>{
     // console.log(tag)
     let data;
     try {
-    await connectToDb();
-    const db = await DB();
+    const db = DB();
     const collection = db.collection('HomeProducts')
     data = await collection.find(tag === 'All'? {} : {tag: tag}).toArray();
     res.json({status: 'ok',data: data})
     }catch(error){
         console.error(error)
         
-    } finally{
-    
-       await closedb();
-       
     }
 
    
@@ -98,15 +91,12 @@ app.get('/search',async(req,res)=>{
     let data;
 
     try {
-        await connectToDb();
-        const db = await DB();
+       
+        const db =  DB();
         const collection = db.collection('HomeProducts')
         data = await collection.find(mainquery).toArray();
     } catch (error) {
         console.error()
-    }finally{
-        
-        await closedb();
     }
 
     res.json({status : 'ok', data : data})
@@ -121,18 +111,14 @@ app.get('/product',async(req,res)=>{
     let data;
     let db;
     try {
-        await connectToDb();
-         db = await DB();
+        
+         db =  DB();
         const collection = db.collection('HomeProducts')
         data = await collection.findOne({_id :new ObjectId(id)});
         res.json({status : 'ok', data : data})
     } catch (error) {
         console.error(error)
         res.json({status : 'error', msg : 'server problem'})
-    }finally{
-       if(db){
-        await closedb();
-       }
     }
 })
 
@@ -144,18 +130,14 @@ app.post('/savemyorders',async(req,res)=>{
 
     console.log(order)
     try {
-        await connectToDb();
-         db = await DB();
+       
+        db = DB();
         const collection = db.collection('myorders')
         await collection.insertOne(order)
         res.json({status : 'ok',})
     } catch (error) {
         console.error(error)
         res.json({status : 'error', msg : 'server problem'})
-    }finally{
-       if(db){
-        await closedb();
-       }
     }
 });
 
@@ -167,18 +149,14 @@ app.get('/getmyorders',async(req,res)=>{
     let data;
     // console.log(order)
     try {
-        await connectToDb();
-        db = await DB();
+        
+        db =  DB();
         const collection = db.collection('myorders')
         data = await collection.find({userId}).toArray();
         res.json({status : 'ok',data: data})
     } catch (error) {
         console.error(error,'error hai')
         res.status(500).json({status : 'error', msg : 'server problem'})
-    }finally{
-       if(db){
-        await closedb();
-       }
     }
 })
 
@@ -193,8 +171,8 @@ app.post('/addtocart',async(req,res)=>{
 
 
     try {
-        await connectToDb();
-        db = await DB();
+        
+        db = DB();
         const collection = db.collection('Cart');
         const check = await collection.find({userId : data.userId, id : data.id }).toArray();
         // console.log(check)
@@ -211,12 +189,6 @@ app.post('/addtocart',async(req,res)=>{
     } catch (error) {
         console.error()
         res.status(500).json({error: error})
-    }finally{
-        if(db){
-
-            await closedb();
-
-        }
     }
 
     
@@ -226,12 +198,13 @@ app.get('/getcartdata',async(req,res)=>{
     // const data = req.body;
     const {userId} = req.query;
     let data;
+    
 
     let db;
 
     try {
-        await connectToDb();
-        db = await DB();
+        
+        db = DB();
         const collection = db.collection('Cart');
 
 
@@ -240,12 +213,6 @@ app.get('/getcartdata',async(req,res)=>{
     } catch (error) {
         console.error(error)
         res.status(500).json({error: error})
-    }finally{
-        if(db){
-
-            await closedb();
-
-        }
     }
 
     
@@ -258,7 +225,7 @@ app.get('/removecartitem',async(req,res)=>{
     console.log(id,userId)
 
     try {
-        await connectToDb();
+        
         db = await DB();
         const collection = db.collection('Cart');
         await collection.deleteOne({userId, _id : new ObjectId(id)})
@@ -270,6 +237,8 @@ app.get('/removecartitem',async(req,res)=>{
 })
 
 
+
+process.on('SIGTERM', () => closedb());
 
 
 

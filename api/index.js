@@ -5,7 +5,7 @@ const { connectToDb } = require('../db');
 
 let cachedDb = null;
 
-module.exports = app,async (req, res) => {
+module.exports = async (req, res) => {
   try {
     // Connect to MongoDB if not already cached
     if (!cachedDb) {
@@ -14,7 +14,7 @@ module.exports = app,async (req, res) => {
     }
 
     // Handle the request through the Express app
-    // await app(req, res);
+    await app(req, res);
   } catch (error) {
     console.error('Error handling request:', error);
     res.status(500).send('Internal Server Error');

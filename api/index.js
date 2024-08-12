@@ -5,7 +5,7 @@ const { connectToDb } = require('../db');
 
 let cachedDb = null;
 
-module.exports = async (req, res) => {
+module.exports = app,async (req, res) => {
   try {
     // Connect to MongoDB if not already cached
     if (!cachedDb) {
